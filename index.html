@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#050505">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="manifest" href="manifest.json">
+<title>beadshop · handmade bracelet studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Jost:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#050505;--panel:#0e0d0b;--line:#2b2417;--gold:#d4af37;--gold2:#f0d98a;--ink:#f3ecdc;--mute:#9a9078;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0;background:var(--bg);color:var(--ink);font-family:Jost,system-ui,sans-serif;overflow:hidden}
+#app{height:100%;display:flex;flex-direction:column}
+header{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:1px solid var(--line)}
+.logo{font-family:'Cormorant Garamond',Georgia,serif;font-size:26px;font-weight:600;letter-spacing:.04em;color:var(--gold2);line-height:1}
+.logo small{display:block;font-family:Jost,sans-serif;font-size:11px;color:var(--mute);letter-spacing:.06em;margin-top:3px}
+a.ig{display:flex;align-items:center;gap:8px;color:var(--gold2);text-decoration:none;border:1px solid var(--gold);border-radius:999px;padding:9px 14px;font-size:13px;transition:.2s}
+a.ig:active{background:var(--gold);color:#000;transform:scale(.97)}
+main{flex:1;min-height:0;display:flex;flex-direction:column}
+#stage{position:relative;flex:1 1 46%;min-height:0;background:radial-gradient(ellipse at 50% 40%,var(--glow,#2a2112) 0%,#0a0907 58%,#000 100%);touch-action:none;cursor:grab}
+canvas{display:block;width:100%;height:100%}
+.hint{position:absolute;left:0;right:0;bottom:10px;text-align:center;font-size:12px;color:var(--mute);pointer-events:none;transition:opacity .6s}
+.badge{position:absolute;top:12px;left:14px;font-size:12px;color:var(--gold2);border:1px solid var(--line);background:#000b;border-radius:999px;padding:5px 11px}
+.cnt{position:absolute;top:12px;right:14px;font-size:12px;color:var(--mute);background:#000b;border:1px solid var(--line);border-radius:999px;padding:5px 11px}
+aside{flex:1 1 54%;min-height:0;background:var(--panel);border-top:1px solid var(--line);padding:14px 16px calc(16px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:13px;overflow-y:auto}
+.top{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+h1{font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:30px;margin:0;line-height:1.05}
+.price{font-family:'Cormorant Garamond',Georgia,serif;font-size:26px;color:var(--gold2);white-space:nowrap}
+.price.dm{font-family:Jost,sans-serif;font-size:13px;color:var(--mute)}
+.sub{color:var(--mute);font-size:14px;margin:4px 0 0;line-height:1.5}
+.thumbs{display:flex;gap:10px;overflow-x:auto;padding:2px 0 4px;scrollbar-width:none}
+.thumbs::-webkit-scrollbar{display:none}
+.th{flex:0 0 auto;width:62px;text-align:center;background:none;border:0;color:var(--mute);font:inherit;font-size:11px;cursor:pointer;padding:0}
+.th i{display:block;width:62px;height:62px;border-radius:50%;border:2px solid var(--line);margin-bottom:5px;transition:.25s}
+.th.on{color:var(--gold2)}.th.on i{border-color:var(--gold);box-shadow:0 0 0 3px #d4af3733;transform:scale(1.05)}
+.lbl{font-size:12px;color:var(--mute);margin:0 0 6px}
+.seg{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
+.ctrls{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}
+.b{background:#16130e;border:1px solid var(--line);color:var(--ink);border-radius:12px;padding:11px 4px;font:inherit;font-size:13px;cursor:pointer;transition:.18s}
+.b:active{transform:scale(.95);background:#22190a}
+.b.on{border-color:var(--gold);color:var(--gold2);background:#1f1808}
+.chip{padding:8px 14px;border-radius:999px}
+.row{display:flex;gap:8px;align-items:center}
+.cta{display:block;text-align:center;text-decoration:none;background:linear-gradient(180deg,var(--gold2),var(--gold));color:#150f02;font-weight:500;border-radius:14px;padding:14px;font-size:15px;transition:.18s}
+.cta:active{transform:scale(.98);filter:brightness(.92)}
+#light{display:none;flex-direction:column;gap:10px;background:#120f09;border:1px solid var(--line);border-radius:14px;padding:12px}
+#light.open{display:flex}
+#light label{display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:13px;color:var(--mute)}
+input[type=range]{flex:1;accent-color:var(--gold);height:28px}
+details{border:1px solid var(--line);border-radius:12px;background:#120f09;padding:0 14px}
+summary{cursor:pointer;padding:13px 0;font-family:'Cormorant Garamond',Georgia,serif;font-size:19px;color:var(--gold2);list-style:none;display:flex;justify-content:space-between}
+summary::after{content:'+';color:var(--gold)}details[open] summary::after{content:'−'}
+details p,details li{font-size:14px;line-height:1.6;color:#cfc6b2;margin:0 0 12px}
+details ul{margin:0;padding:0 0 2px 18px}
+button:focus-visible,a:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid var(--gold2);outline-offset:2px}
+@media(min-width:900px){
+ main{flex-direction:row}#stage{flex:1}
+ aside{flex:0 0 400px;border-top:0;border-left:1px solid var(--line);padding:24px}
+ h1{font-size:38px}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div id="app">
+<header>
+ <div class="logo">beadshop<small>handmade in Kerala</small></div>
+ <a class="ig" href="https://www.instagram.com/beadshop.in/" target="_blank" rel="noopener"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>@beadshop.in</a>
+</header>
+<main>
+ <div id="stage"><canvas id="c"></canvas><div class="badge" id="badge"></div><div class="cnt" id="cnt"></div><div class="hint" id="hint">Drag to orbit · pinch to zoom</div></div>
+ <aside>
+  <div><div class="top"><h1 id="name"></h1><div class="price" id="price"></div></div><p class="sub" id="desc"></p></div>
+  <div class="thumbs" id="thumbs"></div>
+  <div><p class="lbl">Look closer</p>
+   <div class="seg" id="foc"><button class="b on" data-z="all">Overview</button><button class="b" data-z="beads">Beads</button><button class="b" data-z="thread">Thread</button><button class="b" data-z="clasp">Clasp</button></div></div>
+  <div class="ctrls">
+   <button class="b on" id="spin">Spin</button><button class="b" id="zo">Zoom −</button><button class="b" id="zi">Zoom +</button><button class="b" id="reset">Reset</button><button class="b" id="lt">Light</button>
+  </div>
+  <div id="light">
+   <div class="row"><button class="b chip on" data-m="0">Studio</button><button class="b chip" data-m="1">Warm</button><button class="b chip" data-m="2">Noir</button></div>
+   <label>Brightness<input type="range" id="li" min="0.2" max="3" step="0.05" value="1.6"></label>
+   <label>Direction<input type="range" id="la" min="0" max="360" step="1" value="40"></label>
+   <label>Reflections<input type="range" id="le" min="0" max="2" step="0.05" value="1"></label>
+  </div>
+  <a class="cta" href="https://ig.me/m/beadshop.in" target="_blank" rel="noopener">Order on Instagram DM</a>
+  <details open><summary>Why it’s handmade</summary>
+   <p>Every bead is picked, placed and threaded by hand. No machine, no mould. A checker only lines up when each bead sits exactly right, so one bracelet is hours of steady, patient work.</p>
+   <p>That care is what the price pays for: a finished piece you can wear every day, made by one person in Kerala.</p></details>
+  <details><summary>Details</summary><ul>
+   <li>Flat woven band, three beads wide</li>
+   <li>Seed beads set row by row on strong thread</li>
+   <li>Silver-tone lobster clasp with jump rings</li>
+   <li>Unisex. Send your wrist size in the DM for the right fit</li></ul></details>
+  <details><summary>Care</summary><p>Keep it dry and away from perfume and sprays. Store flat, and take it off before sleeping or heavy work so the thread lasts.</p></details>
+  <details><summary>How to order</summary><p>Tap Order on Instagram DM, tell us the design and your wrist size, and we’ll confirm the details with you there.</p></details>
+ </aside>
+</main>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+const $=s=>document.querySelector(s);
+const buzz=()=>{try{navigator.vibrate&&navigator.vibrate(8)}catch(e){}};
+const PI=Math.PI,V3=THREE.Vector3;
+// Products. A/B = bead finishes (colour, metalness, roughness, clearcoat); f picks A(0) or B(1)
+const wv={rows:3,r:.034};
+const P=[
+{n:'Monochrome Check',t:'Pearl white · jet black',price:'₹100',d:'Three rows of pearl-white and jet-black seed beads, woven into a flat checker band.',...wv,A:{c:0x060606,m:0,ro:.1,cc:1},B:{c:0xf4f2ea,m:.08,ro:.3,cc:1},f:(c,r)=>(c+r)%2,sw:['#0b0b0b','#f4f4f0']},
+{n:'Noir & Gold',t:'Black and gold check',price:'',d:'A checkerboard weave in jet black and bright gold.',...wv,A:{c:0x060606,m:0,ro:.1,cc:1},B:{c:0xd9b24a,m:.95,ro:.22,cc:.3},f:(c,r)=>(c+r)%2,sw:['#0d0d0f','#c9a24a']},
+{n:'Gilded Weave',t:'New · gold seed beads',price:'',d:'Gold seed beads in three rows with soft ivory accents.',...wv,A:{c:0xd2a94a,m:.95,ro:.25,cc:.3},B:{c:0xf3ead6,m:.1,ro:.3,cc:1},f:(c,r)=>(c%6<2&&r==1)?1:0,sw:['#c9a24a','#f2e6cf']},
+{n:'Ivory Gold Stripe',t:'Gold with ivory bands',price:'',d:'Gold panels broken by crisp ivory stripes.',...wv,A:{c:0xd2a94a,m:.95,ro:.25,cc:.3},B:{c:0xf3ead6,m:.1,ro:.3,cc:1},f:(c)=>c%8<2?1:0,sw:['#c9a24a','#f5efe3']},
+{n:'Teal Weave',t:'Deep teal seed beads',price:'',d:'Rich teal, three rows wide, with a glossy shine.',...wv,A:{c:0x1d7585,m:.2,ro:.15,cc:1},B:{c:0x145663,m:.2,ro:.15,cc:1},f:(c,r)=>(c+r)%2,sw:['#1d6f7d','#0f4651']},
+{n:'Coral Weave',t:'Orange and brick red',price:'',d:'A sunset mix of coral orange and brick red.',...wv,A:{c:0xee5a2a,m:.1,ro:.2,cc:1},B:{c:0xb3301b,m:.1,ro:.2,cc:1},f:(c,r)=>(c+2*r)%3==0?1:0,sw:['#e8512a','#b8321c']},
+{n:'Red Jasper',t:'Polished natural stone',price:'',d:'A single strand of polished red jasper beads.',rows:1,r:.078,round:1,A:{c:0x9a2e1a,m:0,ro:.22,cc:.6},B:{c:0x7a2112,m:0,ro:.22,cc:.6},f:(c)=>c%3==1?1:0,sw:['#9a2e1a','#7c2314']},
+{n:'Evil Eye Crystal',t:'Clear beads, blue eye',price:'',d:'Clear crystal beads with one evil eye bead at the centre.',rows:1,r:.078,round:1,A:{c:0xe6f0f4,m:0,ro:.04,cc:1},B:{c:0x0f2f7a,m:0,ro:.1,cc:1},f:(c,r,N)=>c==(N>>1)?1:0,sw:['#e9f1f5','#10307a']}
+];
+// renderer
+const stage=$('#stage'),R=new THREE.WebGLRenderer({canvas:$('#c'),antialias:true,alpha:true});
+R.setPixelRatio(Math.min(devicePixelRatio,2));R.outputEncoding=THREE.sRGBEncoding;R.toneMapping=THREE.ACESFilmicToneMapping;R.toneMappingExposure=1.1;
+R.shadowMap.enabled=true;R.shadowMap.type=THREE.PCFSoftShadowMap;
+const S=new THREE.Scene(),cam=new THREE.PerspectiveCamera(34,1,.05,60);
+(function(){const e=document.createElement('canvas');e.width=512;e.height=256;const x=e.getContext('2d');
+const g=x.createLinearGradient(0,0,0,256);g.addColorStop(0,'#3a3022');g.addColorStop(1,'#060606');x.fillStyle=g;x.fillRect(0,0,512,256);
+x.fillStyle='#fff';[[50,30,120,80],[290,20,140,70],[190,160,100,40],[400,100,60,30]].forEach(b=>x.fillRect(...b));
+x.fillStyle='#ffd98a';x.fillRect(440,50,36,130);
+const t=new THREE.CanvasTexture(e);t.mapping=THREE.EquirectangularReflectionMapping;
+S.environment=new THREE.PMREMGenerator(R).fromEquirectangular(t).texture})();
+const key=new THREE.DirectionalLight(0xffffff,1.6),rim=new THREE.PointLight(0xd4af37,.9,14);
+key.castShadow=true;key.shadow.mapSize.set(1024,1024);Object.assign(key.shadow.camera,{left:-2.2,right:2.2,top:2.2,bottom:-2.2,near:.5,far:12});key.shadow.bias=-.0004;
+rim.position.set(-3,2,-2);S.add(key,rim,new THREE.AmbientLight(0xffffff,.22));
+const G=new THREE.Group();G.rotation.x=-1.0;S.add(G);
+const ped=new THREE.Mesh(new THREE.CylinderGeometry(1.7,1.8,.12,72),new THREE.MeshStandardMaterial({color:0x0a0a0a,metalness:.7,roughness:.25}));ped.position.y=-1.5;ped.receiveShadow=true;S.add(ped);
+const edge=new THREE.Mesh(new THREE.TorusGeometry(1.74,.012,8,96),new THREE.MeshStandardMaterial({color:0xd4af37,metalness:1,roughness:.25}));edge.rotation.x=PI/2;edge.position.y=-1.44;S.add(edge);
+// twisted-thread texture
+function threadTex(){const e=document.createElement('canvas');e.width=32;e.height=32;const x=e.getContext('2d');x.fillStyle='#e6dcc6';x.fillRect(0,0,32,32);x.strokeStyle='#a99b7c';x.lineWidth=6;
+ for(let i=-32;i<64;i+=16){x.beginPath();x.moveTo(i,0);x.lineTo(i+32,32);x.stroke()}
+ const t=new THREE.CanvasTexture(e);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(150,1);t.encoding=THREE.sRGBEncoding;return t}
+const TT=threadTex();
+let cur=0,item=null,mats=[],pop=1,N0=0;
+const rnd=i=>{const s=Math.sin(i*127.1+9.7)*43758.5;return s-Math.floor(s)};
+const mk=o=>{const m=new THREE.MeshPhysicalMaterial({color:o.c,metalness:o.m,roughness:o.ro,clearcoat:o.cc,clearcoatRoughness:.06,envMapIntensity:+$('#le').value});mats.push(m);return m};
+const metal=()=>{const m=new THREE.MeshStandardMaterial({color:0xcfd0d6,metalness:1,roughness:.34,envMapIntensity:+$('#le').value});mats.push(m);return m};
+function thread(pts,rad){const m=new THREE.MeshStandardMaterial({map:TT,roughness:.9});const t=new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts),Math.max(8,pts.length*3),rad,6,false),m);t.castShadow=true;return t}
+function build(i){
+ if(item){G.remove(item);item.traverse(o=>{o.geometry&&o.geometry.dispose()})}
+ item=new THREE.Group();mats=[];const p=P[i],g=.28,phi=-PI/2,span=2*PI-2*g;
+ const thick=p.round?2*p.r:1.66*p.r,N=Math.floor(span/(thick*1.01)),step=span/N,sp=p.round?0:2.1*p.r;N0=N*p.rows;
+ const geo=p.round?new THREE.SphereGeometry(1,22,16):new THREE.TorusGeometry(.62,.42,16,26);
+ const L=[[],[]],d=new THREE.Object3D();let k=0;
+ for(let r=0;r<p.rows;r++)for(let c=0;c<N;c++,k++){
+  const a=phi+g+(c+.5)*step,j=p.round?.002:.0035,rr=1+(rnd(k)-.5)*j*2,z=(r-(p.rows-1)/2)*sp+(rnd(k+500)-.5)*j,s=p.r*(1+(rnd(k+900)-.5)*.07);
+  d.position.set(rr*Math.cos(a),rr*Math.sin(a),z);
+  if(p.round)d.rotation.set(0,0,0);else d.rotation.set((rnd(k+1300)-.5)*.14,PI/2+(rnd(k+1700)-.5)*.14,a+PI/2,'ZYX');
+  d.scale.set(s,s,p.round?s:s*1.9);d.updateMatrix();L[p.f(c,r,N)].push(d.matrix.clone())}
+ [p.A,p.B].forEach((o,q)=>{if(!L[q].length)return;const im=new THREE.InstancedMesh(geo,mk(o),L[q].length);L[q].forEach((m,n)=>im.setMatrixAt(n,m));im.castShadow=true;im.receiveShadow=true;item.add(im)});
+ // woven edge threads and end knots
+ const arc=(z,rad,a0,a1)=>{const q=[];for(let n=0;n<=140;n++){const a=a0+(a1-a0)*n/140;q.push(new V3(rad*Math.cos(a),rad*Math.sin(a),z))}return q};
+ const zz=p.round?0:sp*1.5;
+ if(p.round)item.add(thread(arc(0,1,phi+g+.01,phi+g+span-.01),.0045));
+ else[-1,1].forEach(s=>item.add(thread(arc(s*zz,1,phi+g,phi+g+span),.0058)));
+ // closure, built at the top then turned to the front-bottom
+ const C=new THREE.Group(),Y=Math.cos(g),mm=metal();
+ const ring=(r,t,x,y,ax)=>{const m=new THREE.Mesh(new THREE.TorusGeometry(r,t,14,36),mm);m.position.set(x,y,0);if(ax=='x')m.rotation.y=PI/2;if(ax=='y')m.rotation.x=PI/2;m.castShadow=true;C.add(m)};
+ const knot=x=>{[-1,0,1].forEach(q=>{const s=new THREE.Mesh(new THREE.SphereGeometry(.011,10,8),new THREE.MeshStandardMaterial({map:TT,roughness:.9}));s.position.set(x,Y,q*.012*(p.rows>1?1:0));C.add(s)})};
+ const ex=Math.sin(g);knot(ex);knot(-ex);
+ C.add(thread([new V3(ex,Y,0),new V3(ex-.02,Y,0),new V3(.235,Y,0)],.0055));
+ C.add(thread([new V3(-ex,Y,0),new V3(-ex+.02,Y,0),new V3(-.16,Y,0)],.0055));
+ ring(.032,.0085,.235,Y,'x');ring(.05,.0095,-.16,Y,'x');
+ // lobster clasp: teardrop body with slot, loop, lever
+ const sh=new THREE.Shape();sh.absellipse(.19,0,.19,.042,0,2*PI,false,0);
+ const h=new THREE.Path();h.absellipse(.2,0,.12,.014,0,2*PI,true,0);sh.holes.push(h);
+ const eg=new THREE.ExtrudeGeometry(sh,{depth:.02,bevelEnabled:true,bevelThickness:.007,bevelSize:.007,bevelSegments:3,curveSegments:36});eg.translate(0,0,-.01);
+ const lb=new THREE.Group(),body=new THREE.Mesh(eg,mm);body.castShadow=true;lb.add(body);
+ const lv=new THREE.Mesh(new THREE.SphereGeometry(.016,12,10),mm);lv.position.set(.06,.04,0);lb.add(lv);
+ const lp=new THREE.Mesh(new THREE.TorusGeometry(.03,.0095,12,28),mm);lp.position.set(-.014,0,0);lp.rotation.x=PI/2;lb.add(lp);
+ lb.matrixAutoUpdate=false;lb.matrix.makeBasis(new V3(-1,0,0),new V3(0,0,1),new V3(0,1,0)).setPosition(.205,Y,0);C.add(lb);
+ C.rotation.z=PI;item.add(C);
+ G.add(item);pop=0;$('#cnt').textContent='about '+N0+' beads, placed by hand';
+}
+// camera orbit, pinch, wheel; smooth damping and focus targets
+const O={th:0,ph:1.2,di:4.6,tth:0,tph:1.2,tdi:4.6,t:new V3(0,-.2,0),tt:new V3(0,-.2,0)};let auto=true;
+const ptr=new Map();let pd=0;const clampD=v=>Math.min(7,Math.max(.7,v));
+stage.addEventListener('pointerdown',e=>{stage.setPointerCapture(e.pointerId);ptr.set(e.pointerId,[e.clientX,e.clientY]);if(ptr.size==2){const[a,b]=[...ptr.values()];pd=Math.hypot(a[0]-b[0],a[1]-b[1])}$('#hint').style.opacity=0});
+stage.addEventListener('pointermove',e=>{if(!ptr.has(e.pointerId))return;const o=ptr.get(e.pointerId);
+ if(ptr.size==1){O.tth-=(e.clientX-o[0])*.008;O.tph=Math.min(2.4,Math.max(.3,O.tph-(e.clientY-o[1])*.006))}
+ ptr.set(e.pointerId,[e.clientX,e.clientY]);
+ if(ptr.size==2){const[a,b]=[...ptr.values()],n=Math.hypot(a[0]-b[0],a[1]-b[1]);O.tdi=clampD(O.tdi*pd/n);pd=n}});
+const up=e=>ptr.delete(e.pointerId);stage.addEventListener('pointerup',up);stage.addEventListener('pointercancel',up);
+stage.addEventListener('wheel',e=>{e.preventDefault();O.tdi=clampD(O.tdi*(1+e.deltaY*.001))},{passive:false});
+const wp=(a,z)=>{G.updateMatrixWorld();return G.localToWorld(new V3(Math.cos(a),Math.sin(a),z))};
+function focus(z){const a=-PI/2,p=P[cur];let t,d=4.6,ph=1.2;const f=Math.round(O.th/(2*PI))*2*PI;
+ if(z=='all'){t=new V3(0,-.2,0)}
+ else if(z=='beads'){t=wp(a+1.3,0);d=1.2;ph=1.2}
+ else if(z=='thread'){t=wp(a+.8,p.rows>1?p.r*3.15:0);d=.75;ph=1.15}
+ else{t=wp(a,0);d=1.05;ph=1.3;O.tth=f}
+ O.tt.copy(t);O.tdi=d;O.tph=ph;if(z!='all'){auto=false;$('#spin').classList.remove('on')}
+ document.querySelectorAll('[data-z]').forEach(b=>b.classList.toggle('on',b.dataset.z==z));buzz()}
+document.querySelectorAll('[data-z]').forEach(b=>b.onclick=()=>focus(b.dataset.z));
+// lighting
+const MOODS=[{k:0xffffff,r:0xd4af37,g:'#2a2112'},{k:0xffd7a0,r:0xff9a4a,g:'#3a2410'},{k:0xbcd0ff,r:0xd4af37,g:'#10131c'}];
+function light(){const a=+$('#la').value*PI/180;key.position.set(Math.cos(a)*4,3.5,Math.sin(a)*4);key.intensity=+$('#li').value;mats.forEach(m=>m.envMapIntensity=+$('#le').value)}
+// UI
+const th=$('#thumbs');
+P.forEach((p,i)=>{const b=document.createElement('button');b.className='th'+(i?'':' on');b.innerHTML=`<i style="background:repeating-linear-gradient(45deg,${p.sw[0]} 0 6px,${p.sw[1]} 6px 12px)"></i>${p.n.split(' ')[0]}`;b.onclick=()=>pick(i);th.appendChild(b)});
+function pick(i){cur=i;[...th.children].forEach((b,j)=>b.classList.toggle('on',j==i));const p=P[i];
+ $('#name').textContent=p.n;$('#desc').textContent=p.d;$('#badge').textContent=p.t;
+ const pr=$('#price');pr.textContent=p.price||'DM for price';pr.classList.toggle('dm',!p.price);
+ build(i);light();if(i)buzz()}
+$('#spin').onclick=e=>{auto=!auto;e.currentTarget.classList.toggle('on',auto);buzz()};
+$('#zi').onclick=()=>{O.tdi=clampD(O.tdi*.75);buzz()};$('#zo').onclick=()=>{O.tdi=clampD(O.tdi*1.3);buzz()};
+$('#reset').onclick=()=>{O.tth=Math.round(O.th/(2*PI))*2*PI;focus('all');O.tph=1.2};
+$('#lt').onclick=e=>{$('#light').classList.toggle('open');e.currentTarget.classList.toggle('on');buzz()};
+document.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>{const m=MOODS[+b.dataset.m];buzz();document.querySelectorAll('[data-m]').forEach(x=>x.classList.toggle('on',x==b));key.color.setHex(m.k);rim.color.setHex(m.r);stage.style.setProperty('--glow',m.g)});
+['li','la','le'].forEach(id=>$('#'+id).oninput=light);
+function size(){const w=stage.clientWidth,h=stage.clientHeight;R.setSize(w,h,false);cam.aspect=w/h;cam.fov=w/h<.9?48:34;cam.updateProjectionMatrix()}
+new ResizeObserver(size).observe(stage);size();
+const clock=new THREE.Clock();
+function tick(){requestAnimationFrame(tick);const dt=Math.min(clock.getDelta(),.05);
+ if(auto&&!ptr.size)O.tth+=dt*.4;
+ const k=1-Math.pow(.002,dt);O.th+=(O.tth-O.th)*k;O.ph+=(O.tph-O.ph)*k;O.di+=(O.tdi-O.di)*k;O.t.lerp(O.tt,k);
+ cam.position.set(O.t.x+O.di*Math.sin(O.ph)*Math.sin(O.th),O.t.y+O.di*Math.cos(O.ph),O.t.z+O.di*Math.sin(O.ph)*Math.cos(O.th));cam.lookAt(O.t);
+ if(pop<1){pop=Math.min(1,pop+dt*2);G.scale.setScalar(.6+.4*(1-Math.pow(1-pop,3)))}
+ R.render(S,cam)}
+pick(0);tick();
+</script>
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js").catch(() => {}));
+}
+</script>
+</body>
+</html>
